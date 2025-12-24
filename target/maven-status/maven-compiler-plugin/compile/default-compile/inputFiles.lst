@@ -1,0 +1,13 @@
+/home/gasper/uni/3letnik/prpo/projekt/activity_service/src/main/java/com/aqtilink/activity_service/ActivityServiceApplication.java
+/home/gasper/uni/3letnik/prpo/projekt/activity_service/src/main/java/com/aqtilink/activity_service/client/UserServiceClient.java
+/home/gasper/uni/3letnik/prpo/projekt/activity_service/src/main/java/com/aqtilink/activity_service/config/RabbitMQConfig.java
+/home/gasper/uni/3letnik/prpo/projekt/activity_service/src/main/java/com/aqtilink/activity_service/controller/ActivityController.java
+/home/gasper/uni/3letnik/prpo/projekt/activity_service/src/main/java/com/aqtilink/activity_service/dto/CreateActivityDTO.java
+/home/gasper/uni/3letnik/prpo/projekt/activity_service/src/main/java/com/aqtilink/activity_service/dto/FriendDTO.java
+/home/gasper/uni/3letnik/prpo/projekt/activity_service/src/main/java/com/aqtilink/activity_service/dto/NotificationEventDTO.java
+/home/gasper/uni/3letnik/prpo/projekt/activity_service/src/main/java/com/aqtilink/activity_service/exception/ActivityAlreadyStartedException.java
+/home/gasper/uni/3letnik/prpo/projekt/activity_service/src/main/java/com/aqtilink/activity_service/messaging/NotificationPublisherActivity.java
+/home/gasper/uni/3letnik/prpo/projekt/activity_service/src/main/java/com/aqtilink/activity_service/model/Activity.java
+/home/gasper/uni/3letnik/prpo/projekt/activity_service/src/main/java/com/aqtilink/activity_service/model/SportType.java
+/home/gasper/uni/3letnik/prpo/projekt/activity_service/src/main/java/com/aqtilink/activity_service/repository/ActivityRepository.java
+/home/gasper/uni/3letnik/prpo/projekt/activity_service/src/main/java/com/aqtilink/activity_service/service/ActivityService.java
