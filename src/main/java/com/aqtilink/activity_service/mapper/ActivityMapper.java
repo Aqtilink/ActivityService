@@ -24,6 +24,7 @@ public ActivityDTO toDto(Activity activity) {
     dto.setLocation(activity.getLocation());
     dto.setStartTime(activity.getStartTime());
     dto.setOwnerId(activity.getOwnerId());
+    dto.setSportType(activity.getSportType().toString());
 
     FriendDTO owner = userServiceClient.getUser(activity.getOwnerId());
     dto.setOwnerName(owner.getFirstName() + " " + owner.getLastName());
@@ -33,7 +34,18 @@ public ActivityDTO toDto(Activity activity) {
         List<FriendDTO> participants = friends.stream()
             .filter(f -> activity.getParticipants().contains(f.getId()))
                 .toList();
-        dto.setParticipants(participants);
+        
+        // Add owner to participants list if they're in the participants set
+        if (activity.getParticipants().contains(activity.getOwnerId())) {
+            List<FriendDTO> allParticipants = new java.util.ArrayList<>(participants);
+            // Check if owner is not already in the list
+            if (participants.stream().noneMatch(p -> p.getId().equals(activity.getOwnerId()))) {
+                allParticipants.add(owner);
+            }
+            dto.setParticipants(allParticipants);
+        } else {
+            dto.setParticipants(participants);
+        }
     }
 
     return dto;

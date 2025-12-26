@@ -90,7 +90,7 @@ public class ActivityController {
     }
 
     @GetMapping("/joined")
-    public List<Activity> getJoinedActivities() {
+    public List<ActivityDTO> getJoinedActivities() {
         String userId = SecurityUtils.getCurrentUserId();
         return service.getUserJoinedActivities(userId);
     }

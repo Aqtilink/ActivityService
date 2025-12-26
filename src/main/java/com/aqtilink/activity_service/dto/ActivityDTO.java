@@ -10,6 +10,7 @@ public class ActivityDTO {
     private String title;
     private String location;
     private LocalDateTime startTime;
+    private String sportType;
 
     private String ownerId;
     private String ownerName;
@@ -39,4 +40,6 @@ public class ActivityDTO {
 
     public List<FriendDTO> getParticipants() { return participants; }
     public void setParticipants(List<FriendDTO> participants) { this.participants = participants; }
+    public String getSportType() { return sportType; }
+    public void setSportType(String sportType) { this.sportType = sportType; }
 }

@@ -83,8 +83,11 @@ public class ActivityService {
                         .toList();
     }
 
-    public List<Activity> getUserJoinedActivities(String userId) {
-        return repo.findByParticipantsContains(userId);
+    public List<ActivityDTO> getUserJoinedActivities(String userId) {
+        List<Activity> activities = repo.findByParticipantsContains(userId);
+        return activities.stream()
+                .map(activityMapper::toDto)
+                .toList();
     }
 
     public List<ActivityDTO> getFriendsActivities(String userId) {
