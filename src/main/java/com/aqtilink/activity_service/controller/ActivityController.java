@@ -2,6 +2,8 @@ package com.aqtilink.activity_service.controller;
 
 import com.aqtilink.activity_service.model.Activity;
 import com.aqtilink.activity_service.service.ActivityService;
+import com.aqtilink.activity_service.dto.ActivityDTO;
+import com.aqtilink.activity_service.security.SecurityUtils;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +27,10 @@ public class ActivityController {
     @PostMapping("/json")
     @ResponseStatus(HttpStatus.CREATED) 
     public Activity create(@RequestBody Activity activity) {
-        return service.create(activity, activity.getParticipants());
+        // Ensure ownerId is set from authenticated user
+        String userId = SecurityUtils.getCurrentUserId();
+        activity.setOwnerId(userId);
+        return service.create(activity);
     }
     /*
     @PostMapping
@@ -59,24 +64,34 @@ public class ActivityController {
     }
     */
 
-    @PostMapping("/{activityId}/join/{userId}")
+    @PostMapping("/{activityId}/join")
     @ResponseStatus(HttpStatus.OK)
-    public void joinActivity(@PathVariable UUID activityId,@PathVariable UUID userId) {
+    public void joinActivity(@PathVariable UUID activityId) {
+        String userId = SecurityUtils.getCurrentUserId();
         service.joinActivity(activityId, userId);
     }
 
-    @GetMapping("/user/{userId}")
-    public List<Activity> getUserActivities(@PathVariable UUID userId) {
+    @GetMapping("/user")
+    public List<ActivityDTO> getUserActivities() {
+        String userId = SecurityUtils.getCurrentUserId();
         return service.getUserActivities(userId);
     }
 
-    @GetMapping("/friends-feed/{userId}")
-    public List<Activity> getFriendsFeed(@PathVariable UUID userId) {
-    return service.getFriendsActivities(userId);
+    @GetMapping("/friends-feed")
+    public List<ActivityDTO> getFriendsFeed() {
+        String userId = SecurityUtils.getCurrentUserId();
+        return service.getFriendsActivities(userId);
     }
 
-    @GetMapping("/joined/{userId}")
-    public List<Activity> getJoinedActivities(@PathVariable UUID userId) {
+    @GetMapping("/feed")
+    public List<ActivityDTO> getFeed() {
+        String userId = SecurityUtils.getCurrentUserId();
+        return service.getFeed(userId);
+    }
+
+    @GetMapping("/joined")
+    public List<Activity> getJoinedActivities() {
+        String userId = SecurityUtils.getCurrentUserId();
         return service.getUserJoinedActivities(userId);
     }
     

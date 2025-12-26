@@ -8,9 +8,9 @@ import java.util.UUID;
 
 public interface ActivityRepository extends JpaRepository<Activity, UUID> {
 
-    List<Activity> findByOwnerId(UUID ownerId);
+    List<Activity> findByOwnerId(String ownerId);
 
-    List<Activity> findByParticipantsContains(UUID userId);
+    List<Activity> findByParticipantsContains(String userId);
 
-    List<Activity> findByOwnerIdIn(List<UUID> ownerIds);
+    List<Activity> findByOwnerIdIn(List<String> ownerIds);
 }
