@@ -122,4 +122,16 @@ public class ActivityService {
         repo.deleteById(activityId);
     }
 
+    public void deleteUserActivities(String ownerId) {
+        // Remove user from all activities they participated in
+        List<Activity> participatedActivities = repo.findByParticipantsContains(ownerId);
+        for (Activity activity : participatedActivities) {
+            activity.getParticipants().remove(ownerId);
+            repo.save(activity);
+        }
+        
+        // Delete all activities owned by the user
+        repo.deleteByOwnerId(ownerId);
+    }
+
 }

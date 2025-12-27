@@ -26,25 +26,40 @@ public ActivityDTO toDto(Activity activity) {
     dto.setOwnerId(activity.getOwnerId());
     dto.setSportType(activity.getSportType().toString());
 
-    FriendDTO owner = userServiceClient.getUser(activity.getOwnerId());
-    dto.setOwnerName(owner.getFirstName() + " " + owner.getLastName());
+    try {
+        FriendDTO owner = userServiceClient.getUser(activity.getOwnerId());
+        dto.setOwnerName(owner.getFirstName() + " " + owner.getLastName());
+    } catch (Exception e) {
+        // Owner deleted or unavailable
+        dto.setOwnerName("Unknown User");
+    }
 
     if (activity.getParticipants() != null && !activity.getParticipants().isEmpty()) {
-        List<FriendDTO> friends = userServiceClient.getFriends(activity.getOwnerId());
-        List<FriendDTO> participants = friends.stream()
-            .filter(f -> activity.getParticipants().contains(f.getId()))
-                .toList();
-        
-        // Add owner to participants list if they're in the participants set
-        if (activity.getParticipants().contains(activity.getOwnerId())) {
-            List<FriendDTO> allParticipants = new java.util.ArrayList<>(participants);
-            // Check if owner is not already in the list
-            if (participants.stream().noneMatch(p -> p.getId().equals(activity.getOwnerId()))) {
-                allParticipants.add(owner);
+        try {
+            List<FriendDTO> friends = userServiceClient.getFriends(activity.getOwnerId());
+            List<FriendDTO> participants = friends.stream()
+                .filter(f -> activity.getParticipants().contains(f.getId()))
+                    .toList();
+            
+            // Add owner to participants list if they're in the participants set
+            if (activity.getParticipants().contains(activity.getOwnerId())) {
+                List<FriendDTO> allParticipants = new java.util.ArrayList<>(participants);
+                // Check if owner is not already in the list
+                if (participants.stream().noneMatch(p -> p.getId().equals(activity.getOwnerId()))) {
+                    try {
+                        FriendDTO owner = userServiceClient.getUser(activity.getOwnerId());
+                        allParticipants.add(owner);
+                    } catch (Exception e) {
+                        // Owner deleted, skip
+                    }
+                }
+                dto.setParticipants(allParticipants);
+            } else {
+                dto.setParticipants(participants);
             }
-            dto.setParticipants(allParticipants);
-        } else {
-            dto.setParticipants(participants);
+        } catch (Exception e) {
+            // Failed to fetch friends/participants
+            dto.setParticipants(List.of());
         }
     }
 

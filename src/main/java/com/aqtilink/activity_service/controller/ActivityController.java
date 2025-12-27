@@ -5,8 +5,10 @@ import com.aqtilink.activity_service.service.ActivityService;
 import com.aqtilink.activity_service.dto.ActivityDTO;
 import com.aqtilink.activity_service.security.SecurityUtils;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,9 +21,12 @@ import java.util.UUID;
 public class ActivityController {
 
     private final ActivityService service;
+    private final String serviceApiKey;
 
-    public ActivityController(ActivityService service) {
+    public ActivityController(ActivityService service,
+                            @Value("${service.api-key}") String serviceApiKey) {
         this.service = service;
+        this.serviceApiKey = serviceApiKey;
     }
     
     @PostMapping("/json")
@@ -103,6 +108,16 @@ public class ActivityController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteActivity(@PathVariable UUID activityId) {
         service.deleteActivity(activityId);
+    }
+
+    @DeleteMapping("/user/{ownerId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUserActivities(@PathVariable String ownerId,
+                                    @RequestHeader(value = "X-Service-API-Key", required = false) String apiKey) {
+        if (apiKey == null || !apiKey.equals(serviceApiKey)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid service API key");
+        }
+        service.deleteUserActivities(ownerId);
     }
     
     
