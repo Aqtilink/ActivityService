@@ -37,12 +37,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/activities/all").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/activities/user/**").permitAll() // Handled by API key filter
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/activities/user/**").authenticated() // Requires JWT or API key
                 .requestMatchers(HttpMethod.GET, "/api/v1/activities/**").permitAll() // Public feed endpoints
                 .requestMatchers(HttpMethod.POST, "/api/v1/activities/**").authenticated()
                 .anyRequest().authenticated()
             )
-            // Add API key filter before authorization
+            // Add API key filter before authorization to check for API key
             .addFilterBefore(apiKeyFilter, AuthorizationFilter.class);
 
         // Only configure OAuth2 resource server if JWK URI is provided
