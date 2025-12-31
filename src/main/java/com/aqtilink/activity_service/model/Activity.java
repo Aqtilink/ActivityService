@@ -42,6 +42,9 @@ public class Activity {
     @com.fasterxml.jackson.annotation.JsonProperty("participants")
     private Set<String> participants = new HashSet<>();
 
+    @Transient
+    private String ownerName;
+
     @PrePersist
     void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -103,5 +106,13 @@ public class Activity {
     }
     public void setParticipants(Set<String> participants) {
         this.participants = participants;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 }

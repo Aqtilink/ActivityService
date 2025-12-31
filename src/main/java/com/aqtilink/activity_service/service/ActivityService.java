@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ActivityService {
@@ -64,26 +65,41 @@ public class ActivityService {
 
 
 
-    public List<Activity> getUserActivities(String userId) {
-        return repo.findByOwnerId(userId);
-    }
-
-    public List<Activity> getUserJoinedActivities(String userId) {
-        return repo.findByParticipantsContains(userId);
-    }
-
-    public List<Activity> getFriendsActivities(String userId) {
-        // pridobi ID-je prijateljev iz user-service
-        List<String> friendIds = userServiceClient.getFriendIds(userId);
-        if (friendIds.isEmpty()) return List.of();
-        return repo.findByOwnerIdIn(friendIds);
-    }
-
     public List<Activity> getAllActivities() {
-        return repo.findAll();
+        return repo.findAll().stream()
+            .peek(this::enrichWithOwnerName)
+            .collect(Collectors.toList());
     }
+
     public void deleteActivity(UUID activityId) {
         repo.deleteById(activityId);
     }
 
-}
+    private void enrichWithOwnerName(Activity activity) {
+        try {
+            String ownerEmail = userServiceClient.getUserEmail(activity.getOwnerId());
+            activity.setOwnerName(ownerEmail != null ? ownerEmail : "Unknown");
+        } catch (Exception e) {
+            activity.setOwnerName("Unknown");
+        }
+    }
+
+    public List<Activity> getUserActivities(String userId) {
+        return repo.findByOwnerId(userId).stream()
+            .peek(this::enrichWithOwnerName)
+            .collect(Collectors.toList());
+    }
+
+    public List<Activity> getUserJoinedActivities(String userId) {
+        return repo.findByParticipantsContains(userId).stream()
+            .peek(this::enrichWithOwnerName)
+            .collect(Collectors.toList());
+    }
+
+    public List<Activity> getFriendsActivities(String userId) {
+        List<String> friendIds = userServiceClient.getFriendIds(userId);
+        if (friendIds.isEmpty()) return List.of();
+        return repo.findByOwnerIdIn(friendIds).stream()
+            .peek(this::enrichWithOwnerName)
+            .collect(Collectors.toList());
+    }}
