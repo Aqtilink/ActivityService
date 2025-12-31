@@ -77,8 +77,8 @@ public class ActivityService {
 
     private void enrichWithOwnerName(Activity activity) {
         try {
-            String ownerEmail = userServiceClient.getUserEmail(activity.getOwnerId());
-            activity.setOwnerName(ownerEmail != null ? ownerEmail : "Unknown");
+            String ownerName = userServiceClient.getUserName(activity.getOwnerId());
+            activity.setOwnerName(ownerName != null ? ownerName : "Unknown");
         } catch (Exception e) {
             activity.setOwnerName("Unknown");
         }
@@ -102,4 +102,6 @@ public class ActivityService {
         return repo.findByOwnerIdIn(friendIds).stream()
             .peek(this::enrichWithOwnerName)
             .collect(Collectors.toList());
-    }}
+    }
+}
+

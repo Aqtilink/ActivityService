@@ -9,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import com.aqtilink.activity_service.dto.UserDTO;
 import com.aqtilink.activity_service.dto.FriendDTO;
 
 import java.util.List;
@@ -77,6 +78,30 @@ public class UserServiceClient {
         } catch (Exception e) {
             System.err.println("Error fetching friend emails from user service: " + e.getMessage());
             return List.of(); // Return empty list on error instead of throwing
+        }
+    }
+
+    public String getUserName(String clerkId) {
+        try {
+            String url = userServiceUrl + "/api/v1/users/" + clerkId;
+            HttpHeaders headers = createServiceHeaders();
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<UserDTO> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    entity,
+                    UserDTO.class
+            );
+
+            UserDTO user = response.getBody();
+            if (user != null && user.getFirstName() != null) {
+                return user.getFirstName() + (user.getLastName() != null ? " " + user.getLastName() : "");
+            }
+            return clerkId;
+        } catch (Exception e) {
+            System.err.println("Error fetching user from user service: " + e.getMessage());
+            return clerkId;
         }
     }
 
