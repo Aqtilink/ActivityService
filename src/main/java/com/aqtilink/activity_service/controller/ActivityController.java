@@ -31,13 +31,13 @@ public class ActivityController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Activity create(
-            @RequestParam UUID ownerId,
+            @RequestParam String ownerId,
             @RequestParam String title,
             @RequestParam String sportType,
             @RequestParam String startTime,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) MultipartFile gpxFile,
-            @RequestParam(required = false) Set<UUID> participants
+            @RequestParam(required = false) Set<String> participants
     ) throws IOException {
 
         Activity activity = new Activity();
@@ -61,22 +61,22 @@ public class ActivityController {
 
     @PostMapping("/{activityId}/join/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public void joinActivity(@PathVariable UUID activityId,@PathVariable UUID userId) {
+    public void joinActivity(@PathVariable UUID activityId, @PathVariable String userId) {
         service.joinActivity(activityId, userId);
     }
 
     @GetMapping("/user/{userId}")
-    public List<Activity> getUserActivities(@PathVariable UUID userId) {
+    public List<Activity> getUserActivities(@PathVariable String userId) {
         return service.getUserActivities(userId);
     }
 
     @GetMapping("/friends-feed/{userId}")
-    public List<Activity> getFriendsFeed(@PathVariable UUID userId) {
+    public List<Activity> getFriendsFeed(@PathVariable String userId) {
     return service.getFriendsActivities(userId);
     }
 
     @GetMapping("/joined/{userId}")
-    public List<Activity> getJoinedActivities(@PathVariable UUID userId) {
+    public List<Activity> getJoinedActivities(@PathVariable String userId) {
         return service.getUserJoinedActivities(userId);
     }
     

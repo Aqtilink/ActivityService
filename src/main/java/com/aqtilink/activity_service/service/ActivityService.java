@@ -27,7 +27,7 @@ public class ActivityService {
         this.userServiceClient = userServiceClient;
         this.notificationPublisherActivity = notificationPublisherActivity;
     }
-    public Activity create(Activity activity, Set<UUID> notifyFriends) {
+    public Activity create(Activity activity, Set<String> notifyFriends) {
         activity.getParticipants().add(activity.getOwnerId());
         Activity saved = repo.save(activity);
 
@@ -46,7 +46,7 @@ public class ActivityService {
         return saved;
     }
 
-    public void joinActivity(UUID activityId, UUID userId) {
+    public void joinActivity(UUID activityId, String userId) {
         Activity activity = repo.findById(activityId)
                 .orElseThrow(() -> new RuntimeException("Activity not found"));
 
@@ -64,17 +64,17 @@ public class ActivityService {
 
 
 
-    public List<Activity> getUserActivities(UUID userId) {
+    public List<Activity> getUserActivities(String userId) {
         return repo.findByOwnerId(userId);
     }
 
-    public List<Activity> getUserJoinedActivities(UUID userId) {
+    public List<Activity> getUserJoinedActivities(String userId) {
         return repo.findByParticipantsContains(userId);
     }
 
-    public List<Activity> getFriendsActivities(UUID userId) {
+    public List<Activity> getFriendsActivities(String userId) {
         // pridobi ID-je prijateljev iz user-service
-        List<UUID> friendIds = userServiceClient.getFriendIds(userId);
+        List<String> friendIds = userServiceClient.getFriendIds(userId);
         if (friendIds.isEmpty()) return List.of();
         return repo.findByOwnerIdIn(friendIds);
     }

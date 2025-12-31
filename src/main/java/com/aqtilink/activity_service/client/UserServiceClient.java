@@ -34,7 +34,7 @@ public class UserServiceClient {
         this.serviceApiKey = serviceApiKey;
     }
 
-    public List<UUID> getFriendIds(UUID userId) {
+    public List<String> getFriendIds(String userId) {
         String url = userServiceUrl + "/api/v1/users/" + userId + "/friends";
         HttpHeaders headers = createServiceHeaders();
         HttpEntity<Void> entity = new HttpEntity<>(headers);
@@ -52,7 +52,7 @@ public class UserServiceClient {
         return friends.stream().map(FriendDTO::getId).collect(Collectors.toList());
     }
     
-    public List<String> getFriendEmails(UUID userId) {
+    public List<String> getFriendEmails(String userId) {
         String url = userServiceUrl + "/api/v1/users/" + userId + "/friends";
         HttpHeaders headers = createServiceHeaders();
         HttpEntity<Void> entity = new HttpEntity<>(headers);

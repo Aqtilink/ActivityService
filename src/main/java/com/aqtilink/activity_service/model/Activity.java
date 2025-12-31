@@ -15,7 +15,7 @@ public class Activity {
     private UUID id;
 
     @Column(nullable = false)
-    private UUID ownerId;
+    private String ownerId;
 
     @Column(nullable = false)
     private String title;
@@ -39,7 +39,7 @@ public class Activity {
         joinColumns = @JoinColumn(name = "activity_id")
     )
     @Column(name = "user_id")
-    private Set<UUID> participants = new HashSet<>();
+    private Set<String> participants = new HashSet<>();
 
     @PrePersist
     void onCreate() {
@@ -55,10 +55,10 @@ public class Activity {
     public void setId(UUID id) {
         this.id = id;
     }
-    public UUID getOwnerId() {
+    public String getOwnerId() {
         return ownerId;
     }
-    public void setOwnerId(UUID ownerId) {
+    public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
     public String getTitle() {
@@ -97,10 +97,10 @@ public class Activity {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-    public Set<UUID> getParticipants() {
+    public Set<String> getParticipants() {
         return participants;
     }
-    public void setParticipants(Set<UUID> participants) {
+    public void setParticipants(Set<String> participants) {
         this.participants = participants;
     }
 }

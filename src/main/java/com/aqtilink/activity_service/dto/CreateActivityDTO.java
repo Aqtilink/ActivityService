@@ -7,18 +7,18 @@ import com.aqtilink.activity_service.model.SportType;
 
 
 public class CreateActivityDTO {
-    private UUID ownerId;
+    private String ownerId;
     private String title;
     private SportType sportType;
     private LocalDateTime startTime;
     private String location;
-    private Set<UUID> notifyFriends;
+    private Set<String> notifyFriends;
 
     // getters & setters
-    public UUID getOwnerId() {
+    public String getOwnerId() {
         return ownerId;
     }
-    public void setOwnerId(UUID ownerId) {
+    public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
     public String getTitle() {
@@ -45,7 +45,7 @@ public class CreateActivityDTO {
     public void setLocation(String location) {
         this.location = location;
     }
-    public Set<UUID> getNotifyFriends() {
+    public Set<String> getNotifyFriends() {
         return notifyFriends;
     }
 }
