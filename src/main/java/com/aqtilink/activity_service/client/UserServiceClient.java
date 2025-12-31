@@ -35,39 +35,49 @@ public class UserServiceClient {
     }
 
     public List<String> getFriendIds(String userId) {
-        String url = userServiceUrl + "/api/v1/users/" + userId + "/friends";
-        HttpHeaders headers = createServiceHeaders();
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        try {
+            String url = userServiceUrl + "/api/v1/users/" + userId + "/friends";
+            HttpHeaders headers = createServiceHeaders();
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<List<FriendDTO>> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                entity,
-                new ParameterizedTypeReference<List<FriendDTO>>() {}
-        );
+            ResponseEntity<List<FriendDTO>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    entity,
+                    new ParameterizedTypeReference<List<FriendDTO>>() {}
+            );
 
-        List<FriendDTO> friends = response.getBody();
-        if (friends == null) return List.of();
+            List<FriendDTO> friends = response.getBody();
+            if (friends == null) return List.of();
 
-        return friends.stream().map(FriendDTO::getId).collect(Collectors.toList());
+            return friends.stream().map(FriendDTO::getId).collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("Error fetching friends from user service: " + e.getMessage());
+            return List.of(); // Return empty list on error instead of throwing
+        }
     }
     
     public List<String> getFriendEmails(String userId) {
-        String url = userServiceUrl + "/api/v1/users/" + userId + "/friends";
-        HttpHeaders headers = createServiceHeaders();
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        try {
+            String url = userServiceUrl + "/api/v1/users/" + userId + "/friends";
+            HttpHeaders headers = createServiceHeaders();
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<List<FriendDTO>> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                entity,
-                new ParameterizedTypeReference<List<FriendDTO>>() {}
-        );
+            ResponseEntity<List<FriendDTO>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    entity,
+                    new ParameterizedTypeReference<List<FriendDTO>>() {}
+            );
 
-        List<FriendDTO> friends = response.getBody();
-        if (friends == null) return List.of();
+            List<FriendDTO> friends = response.getBody();
+            if (friends == null) return List.of();
 
-        return friends.stream().map(FriendDTO::getEmail).toList();
+            return friends.stream().map(FriendDTO::getEmail).toList();
+        } catch (Exception e) {
+            System.err.println("Error fetching friend emails from user service: " + e.getMessage());
+            return List.of(); // Return empty list on error instead of throwing
+        }
     }
 
     /**

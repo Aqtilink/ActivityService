@@ -39,6 +39,7 @@ public class Activity {
         joinColumns = @JoinColumn(name = "activity_id")
     )
     @Column(name = "user_id")
+    @com.fasterxml.jackson.annotation.JsonProperty("participants")
     private Set<String> participants = new HashSet<>();
 
     @PrePersist
