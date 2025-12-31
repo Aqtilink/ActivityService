@@ -17,11 +17,23 @@ spring:
     properties:
       hibernate:
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWK_SET_URI:https://clerk.aqtilink.live/.well-known/jwks.json}
+
 management:
   endpoints:
     web:
       exposure:
         include: health,info
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,https://aqtilink.live}
+
+service:
+  api-key: ${SERVICE_API_KEY:dev-secret-key-change-in-production}
 
 user-service:
   url: ${USER_SERVICE_URL:http://localhost:8080}
