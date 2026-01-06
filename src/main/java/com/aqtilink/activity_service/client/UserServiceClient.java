@@ -13,7 +13,6 @@ import com.aqtilink.activity_service.dto.UserDTO;
 import com.aqtilink.activity_service.dto.FriendDTO;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +53,7 @@ public class UserServiceClient {
             return friends.stream().map(FriendDTO::getId).collect(Collectors.toList());
         } catch (Exception e) {
             System.err.println("Error fetching friends from user service: " + e.getMessage());
-            return List.of(); // Return empty list on error instead of throwing
+            return List.of();
         }
     }
     
@@ -77,7 +76,7 @@ public class UserServiceClient {
             return friends.stream().map(FriendDTO::getEmail).toList();
         } catch (Exception e) {
             System.err.println("Error fetching friend emails from user service: " + e.getMessage());
-            return List.of(); // Return empty list on error instead of throwing
+            return List.of();
         }
     }
 
@@ -130,9 +129,7 @@ public class UserServiceClient {
         }
     }
 
-    /**
-     * Creates HTTP headers with service API key for inter-service communication.
-     */
+
     private HttpHeaders createServiceHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Service-API-Key", serviceApiKey);

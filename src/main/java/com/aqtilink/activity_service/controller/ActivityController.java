@@ -28,37 +28,6 @@ public class ActivityController {
     public ActivityResponseDTO create(@RequestBody Activity activity) {
         return service.create(activity, activity.getParticipants());
     }
-    /*
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Activity create(
-            @RequestParam String ownerId,
-            @RequestParam String title,
-            @RequestParam String sportType,
-            @RequestParam String startTime,
-            @RequestParam(required = false) String location,
-            @RequestParam(required = false) MultipartFile gpxFile,
-            @RequestParam(required = false) Set<String> participants
-    ) throws IOException {
-
-        Activity activity = new Activity();
-        activity.setOwnerId(ownerId);
-        activity.setTitle(title);
-        activity.setSportType(Enum.valueOf(SportType.class, sportType.toUpperCase()));
-        activity.setStartTime(LocalDateTime.parse(startTime));
-        activity.setLocation(location);
-        activity.setParticipants(participants);
-
-        if (gpxFile != null && !gpxFile.isEmpty()) {
-            // za zdaj shranimo datoteko lokalno, lahko tudi byte[] ali path
-            String gpxPath = "/tmp/gpx_" + UUID.randomUUID() + ".gpx";
-            gpxFile.transferTo(new File(gpxPath));
-            activity.setGpxPath(gpxPath);
-        }
-
-        return service.create(activity);
-    }
-    */
 
     @PostMapping("/{activityId}/join/{userId}")
     @ResponseStatus(HttpStatus.OK)
@@ -90,6 +59,17 @@ public class ActivityController {
     public void deleteActivity(@PathVariable UUID activityId) {
         service.deleteActivity(activityId);
     }
+
+    @DeleteMapping("/user/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteActivitiesByUser(@PathVariable String userId) {
+        service.deleteActivitiesOwnedByUser(userId);
+    }
     
+    @DeleteMapping("/participants/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeUserFromActivities(@PathVariable String userId) {
+        service.removeUserFromAllActivities(userId);
+    }
     
 }

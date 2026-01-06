@@ -37,7 +37,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/activities/all").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/activities/user/**").authenticated() // Requires JWT or API key
+                // Service-to-service deletes are guarded by ServiceApiKeyFilter; allow through here
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/activities/user/**").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/activities/participants/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/activities/**").permitAll() // Public feed endpoints
                 .requestMatchers(HttpMethod.POST, "/api/v1/activities/**").authenticated()
                 .anyRequest().authenticated()

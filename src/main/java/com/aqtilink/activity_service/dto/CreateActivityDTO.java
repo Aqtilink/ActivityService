@@ -2,7 +2,6 @@ package com.aqtilink.activity_service.dto;
 
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.UUID;
 import com.aqtilink.activity_service.model.SportType;
 
 

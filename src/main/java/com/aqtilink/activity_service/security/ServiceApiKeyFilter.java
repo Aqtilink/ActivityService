@@ -58,6 +58,7 @@ public class ServiceApiKeyFilter extends OncePerRequestFilter {
 
     private boolean isServiceEndpoint(String path) {
         // Service endpoints that can be called by either services or authenticated users
-        return path.contains("/api/v1/activities/user/");
+        return path.contains("/api/v1/activities/user/")
+                || path.contains("/api/v1/activities/participants/");
     }
 }

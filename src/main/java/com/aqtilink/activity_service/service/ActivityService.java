@@ -91,6 +91,21 @@ public class ActivityService {
         return mapToResponse(repo.findByOwnerIdIn(friendIds));
     }
 
+    public void removeUserFromAllActivities(String userId) {
+        List<Activity> activities = repo.findByParticipantsContains(userId);
+        for (Activity activity : activities) {
+            activity.getParticipants().remove(userId);
+            repo.save(activity);
+        }
+    }
+
+    public void deleteActivitiesOwnedByUser(String userId) {
+        List<Activity> owned = repo.findByOwnerId(userId);
+        if (!owned.isEmpty()) {
+            repo.deleteAll(owned);
+        }
+    }
+
     private List<ActivityResponseDTO> mapToResponse(List<Activity> activities) {
         if (activities.isEmpty()) {
             return List.of();
@@ -116,7 +131,6 @@ public class ActivityService {
     private Map<String, UserSummaryDTO> fetchUserSummaries(Set<String> userIds) {
         Map<String, UserSummaryDTO> map = new HashMap<>();
 
-        // Primary: batch fetch from user-service
         List<UserDTO> fetched = userServiceClient.getUserSummaries(userIds);
         for (UserDTO user : fetched) {
             map.put(user.getClerkId(), new UserSummaryDTO(
@@ -126,14 +140,12 @@ public class ActivityService {
             ));
         }
 
-        // Fallback: for any missing IDs, fetch individually to avoid Unknown labels
         for (String id : userIds) {
             if (map.containsKey(id)) {
                 continue;
             }
             try {
                 String fullName = userServiceClient.getUserName(id);
-                // Split best-effort into first and last by first space
                 String first = fullName;
                 String last = "";
                 int idx = fullName.indexOf(' ');
