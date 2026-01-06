@@ -105,6 +105,31 @@ public class UserServiceClient {
         }
     }
 
+    public List<UserDTO> getUserSummaries(java.util.Set<String> clerkIds) {
+        if (clerkIds == null || clerkIds.isEmpty()) {
+            return List.of();
+        }
+
+        try {
+            String url = userServiceUrl + "/api/v1/users/batch";
+            HttpHeaders headers = createServiceHeaders();
+            HttpEntity<java.util.Set<String>> entity = new HttpEntity<>(clerkIds, headers);
+
+            ResponseEntity<List<UserDTO>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    new ParameterizedTypeReference<List<UserDTO>>() {}
+            );
+
+            List<UserDTO> users = response.getBody();
+            return users != null ? users : List.of();
+        } catch (Exception e) {
+            System.err.println("Error fetching users from user service: " + e.getMessage());
+            return List.of();
+        }
+    }
+
     /**
      * Creates HTTP headers with service API key for inter-service communication.
      */

@@ -33,7 +33,7 @@ cors:
   allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,https://aqtilink.live}
 
 service:
-  api-key: ${SERVICE_API_KEY:dev-secret-key-change-in-production}
+  api-key: ${SERVICE_API_KEY:key-is-in-env}
 
 user-service:
   url: ${USER_SERVICE_URL:http://localhost:8080}

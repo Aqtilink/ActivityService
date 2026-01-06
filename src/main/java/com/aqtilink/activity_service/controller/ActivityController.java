@@ -1,5 +1,6 @@
 package com.aqtilink.activity_service.controller;
 
+import com.aqtilink.activity_service.dto.ActivityResponseDTO;
 import com.aqtilink.activity_service.model.Activity;
 import com.aqtilink.activity_service.service.ActivityService;
 
@@ -24,19 +25,8 @@ public class ActivityController {
     
     @PostMapping("/json")
     @ResponseStatus(HttpStatus.CREATED) 
-    public Activity create(@RequestBody Activity activity) {
-        Activity saved = service.create(activity, activity.getParticipants());
-        // Return a clean activity object without the problematic participants set
-        Activity response = new Activity();
-        response.setId(saved.getId());
-        response.setOwnerId(saved.getOwnerId());
-        response.setTitle(saved.getTitle());
-        response.setSportType(saved.getSportType());
-        response.setStartTime(saved.getStartTime());
-        response.setLocation(saved.getLocation());
-        response.setGpxPath(saved.getGpxPath());
-        response.setCreatedAt(saved.getCreatedAt());
-        return response;
+    public ActivityResponseDTO create(@RequestBody Activity activity) {
+        return service.create(activity, activity.getParticipants());
     }
     /*
     @PostMapping
@@ -77,24 +67,22 @@ public class ActivityController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<Activity> getUserActivities(@PathVariable String userId) {
+    public List<ActivityResponseDTO> getUserActivities(@PathVariable String userId) {
         return service.getUserActivities(userId);
     }
 
     @GetMapping("/friends-feed/{userId}")
-    public List<Activity> getFriendsFeed(@PathVariable String userId) {
-        // Simplified: return all activities
-        // TODO: implement proper friend filtering by calling user-service
-        return service.getAllActivities();
+    public List<ActivityResponseDTO> getFriendsFeed(@PathVariable String userId) {
+        return service.getFriendsActivities(userId);
     }
 
     @GetMapping("/joined/{userId}")
-    public List<Activity> getJoinedActivities(@PathVariable String userId) {
+    public List<ActivityResponseDTO> getJoinedActivities(@PathVariable String userId) {
         return service.getUserJoinedActivities(userId);
     }
     
     @GetMapping("/all")
-    public List<Activity> getAllActivities() {
+    public List<ActivityResponseDTO> getAllActivities() {
         return service.getAllActivities();
     }
     @DeleteMapping("{activityId}")

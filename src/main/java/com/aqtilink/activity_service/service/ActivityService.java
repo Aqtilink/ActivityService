@@ -1,19 +1,23 @@
 package com.aqtilink.activity_service.service;
 
+import com.aqtilink.activity_service.client.UserServiceClient;
+import com.aqtilink.activity_service.dto.ActivityResponseDTO;
+import com.aqtilink.activity_service.dto.NotificationEventDTO;
+import com.aqtilink.activity_service.dto.UserDTO;
+import com.aqtilink.activity_service.dto.UserSummaryDTO;
+import com.aqtilink.activity_service.exception.ActivityAlreadyStartedException;
+import com.aqtilink.activity_service.messaging.NotificationPublisherActivity;
 import com.aqtilink.activity_service.model.Activity;
 import com.aqtilink.activity_service.repository.ActivityRepository;
-import com.aqtilink.activity_service.client.UserServiceClient;
-import com.aqtilink.activity_service.messaging.NotificationPublisherActivity;
-import com.aqtilink.activity_service.dto.NotificationEventDTO;
-import com.aqtilink.activity_service.exception.ActivityAlreadyStartedException;
-
-
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,7 +32,7 @@ public class ActivityService {
         this.userServiceClient = userServiceClient;
         this.notificationPublisherActivity = notificationPublisherActivity;
     }
-    public Activity create(Activity activity, Set<String> notifyFriends) {
+    public ActivityResponseDTO create(Activity activity, Set<String> notifyFriends) {
         activity.getParticipants().add(activity.getOwnerId());
         Activity saved = repo.save(activity);
 
@@ -44,7 +48,7 @@ public class ActivityService {
             }
         }
 
-        return saved;
+        return mapToResponse(List.of(saved)).get(0);
     }
 
     public void joinActivity(UUID activityId, String userId) {
@@ -65,43 +69,113 @@ public class ActivityService {
 
 
 
-    public List<Activity> getAllActivities() {
-        return repo.findAll().stream()
-            .peek(this::enrichWithOwnerName)
-            .collect(Collectors.toList());
+    public List<ActivityResponseDTO> getAllActivities() {
+        return mapToResponse(repo.findAll());
     }
 
     public void deleteActivity(UUID activityId) {
         repo.deleteById(activityId);
     }
 
-    private void enrichWithOwnerName(Activity activity) {
-        try {
-            String ownerName = userServiceClient.getUserName(activity.getOwnerId());
-            activity.setOwnerName(ownerName != null ? ownerName : "Unknown");
-        } catch (Exception e) {
-            activity.setOwnerName("Unknown");
-        }
+    public List<ActivityResponseDTO> getUserActivities(String userId) {
+        return mapToResponse(repo.findByOwnerId(userId));
     }
 
-    public List<Activity> getUserActivities(String userId) {
-        return repo.findByOwnerId(userId).stream()
-            .peek(this::enrichWithOwnerName)
-            .collect(Collectors.toList());
+    public List<ActivityResponseDTO> getUserJoinedActivities(String userId) {
+        return mapToResponse(repo.findByParticipantsContains(userId));
     }
 
-    public List<Activity> getUserJoinedActivities(String userId) {
-        return repo.findByParticipantsContains(userId).stream()
-            .peek(this::enrichWithOwnerName)
-            .collect(Collectors.toList());
-    }
-
-    public List<Activity> getFriendsActivities(String userId) {
+    public List<ActivityResponseDTO> getFriendsActivities(String userId) {
         List<String> friendIds = userServiceClient.getFriendIds(userId);
         if (friendIds.isEmpty()) return List.of();
-        return repo.findByOwnerIdIn(friendIds).stream()
-            .peek(this::enrichWithOwnerName)
+        return mapToResponse(repo.findByOwnerIdIn(friendIds));
+    }
+
+    private List<ActivityResponseDTO> mapToResponse(List<Activity> activities) {
+        if (activities.isEmpty()) {
+            return List.of();
+        }
+
+        Set<String> userIds = new HashSet<>();
+        for (Activity activity : activities) {
+            if (activity.getOwnerId() != null) {
+                userIds.add(activity.getOwnerId());
+            }
+            if (activity.getParticipants() != null) {
+                userIds.addAll(activity.getParticipants());
+            }
+        }
+
+        Map<String, UserSummaryDTO> users = fetchUserSummaries(userIds);
+
+        return activities.stream()
+                .map(activity -> toDto(activity, users))
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, UserSummaryDTO> fetchUserSummaries(Set<String> userIds) {
+        Map<String, UserSummaryDTO> map = new HashMap<>();
+
+        // Primary: batch fetch from user-service
+        List<UserDTO> fetched = userServiceClient.getUserSummaries(userIds);
+        for (UserDTO user : fetched) {
+            map.put(user.getClerkId(), new UserSummaryDTO(
+                    user.getClerkId(),
+                    user.getFirstName(),
+                    user.getLastName()
+            ));
+        }
+
+        // Fallback: for any missing IDs, fetch individually to avoid Unknown labels
+        for (String id : userIds) {
+            if (map.containsKey(id)) {
+                continue;
+            }
+            try {
+                String fullName = userServiceClient.getUserName(id);
+                // Split best-effort into first and last by first space
+                String first = fullName;
+                String last = "";
+                int idx = fullName.indexOf(' ');
+                if (idx > 0) {
+                    first = fullName.substring(0, idx);
+                    last = fullName.substring(idx + 1);
+                }
+                map.put(id, new UserSummaryDTO(id, first, last));
+            } catch (Exception e) {
+                map.put(id, new UserSummaryDTO(id, id, ""));
+            }
+        }
+
+        return map;
+    }
+
+    private ActivityResponseDTO toDto(Activity activity, Map<String, UserSummaryDTO> users) {
+        ActivityResponseDTO dto = new ActivityResponseDTO();
+        dto.setId(activity.getId());
+        dto.setOwnerId(activity.getOwnerId());
+        dto.setTitle(activity.getTitle());
+        dto.setSportType(activity.getSportType());
+        dto.setStartTime(activity.getStartTime());
+        dto.setLocation(activity.getLocation());
+        dto.setGpxPath(activity.getGpxPath());
+        dto.setCreatedAt(activity.getCreatedAt());
+
+        dto.setOwner(users.getOrDefault(
+                activity.getOwnerId(),
+                new UserSummaryDTO(activity.getOwnerId(), "", "")
+        ));
+
+        Set<String> participantIds = activity.getParticipants() != null
+            ? activity.getParticipants()
+            : Set.of();
+
+        List<UserSummaryDTO> participantDtos = participantIds.stream()
+            .map(id -> users.getOrDefault(id, new UserSummaryDTO(id, "", "")))
             .collect(Collectors.toList());
+
+        dto.setParticipants(participantDtos);
+        return dto;
     }
 }
 
