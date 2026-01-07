@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-
-
+// Controller for managing activities with endpoint mappings
 
 @RestController
 @RequestMapping("/api/v1/activities")
@@ -36,21 +35,25 @@ public class ActivityController {
     }
 
     @GetMapping("/user/{userId}")
+    @ResponseStatus(HttpStatus.OK)
     public List<ActivityResponseDTO> getUserActivities(@PathVariable String userId) {
         return service.getUserActivities(userId);
     }
 
     @GetMapping("/friends-feed/{userId}")
+    @ResponseStatus(HttpStatus.OK)
     public List<ActivityResponseDTO> getFriendsFeed(@PathVariable String userId) {
         return service.getFriendsActivities(userId);
     }
 
     @GetMapping("/joined/{userId}")
+    @ResponseStatus(HttpStatus.OK)
     public List<ActivityResponseDTO> getJoinedActivities(@PathVariable String userId) {
         return service.getUserJoinedActivities(userId);
     }
     
     @GetMapping("/all")
+    @ResponseStatus(HttpStatus.OK)
     public List<ActivityResponseDTO> getAllActivities() {
         return service.getAllActivities();
     }

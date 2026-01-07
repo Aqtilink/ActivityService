@@ -53,66 +53,24 @@ public class Activity {
     public Activity() {}
 
     // Getters and Setters
-    public UUID getId() {
-        return id;
-    }
-    public void setId(UUID id) {
-        this.id = id;
-    }
-    public String getOwnerId() {
-        return ownerId;
-    }
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
-    }
-    public String getTitle() {
-        return title;
-    }
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public SportType getSportType() {
-        return sportType;
-    }
-    public void setSportType(SportType sportType) {
-        this.sportType = sportType;
-    }
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-    public String getLocation() {
-        return location;
-    }
-    public void setLocation(String location) {
-        this.location = location;
-    }
-    public String getGpxPath() {
-        return gpxPath;
-    }
-    public void setGpxPath(String gpxPath) {
-        this.gpxPath = gpxPath;
-    }
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    public Set<String> getParticipants() {
-        return participants;
-    }
-    public void setParticipants(Set<String> participants) {
-        this.participants = participants;
-    }
-
-    public String getOwnerName() {
-        return ownerName;
-    }
-
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
-    }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
+    public String getOwnerId() { return ownerId; }
+    public void setOwnerId(String ownerId) { this.ownerId = ownerId; }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    public SportType getSportType() { return sportType; }
+    public void setSportType(SportType sportType) { this.sportType = sportType; }
+    public LocalDateTime getStartTime() { return startTime; }
+    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+    public String getGpxPath() { return gpxPath; }
+    public void setGpxPath(String gpxPath) { this.gpxPath = gpxPath; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Set<String> getParticipants() { return participants; }
+    public void setParticipants(Set<String> participants) { this.participants = participants; }
+    public String getOwnerName() { return ownerName; }
+    public void setOwnerName(String ownerName) { this.ownerName = ownerName; }
 }

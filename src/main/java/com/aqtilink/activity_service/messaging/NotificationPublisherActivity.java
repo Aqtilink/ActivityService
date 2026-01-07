@@ -4,6 +4,8 @@ import com.aqtilink.activity_service.dto.NotificationEventDTO;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
+// Publishes notification events to RabbitMQ
+
 @Component
 public class NotificationPublisherActivity {
 
@@ -14,11 +16,10 @@ public class NotificationPublisherActivity {
     }
 
     public void publish(NotificationEventDTO notification) {
-        // Sends the notification to the exchange with a routing key
         rabbitTemplate.convertAndSend(
-                "notification-exchange",        // exchange name
-                "notification.routingkey",      // routing key
-                notification                     // payload
+                "notification-exchange",
+                "notification.routingkey",
+                notification
         );
     }
 }

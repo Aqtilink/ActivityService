@@ -15,10 +15,8 @@ import com.aqtilink.activity_service.dto.FriendDTO;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Client for communicating with User Service.
- * Includes service-to-service API key authentication.
- */
+// Client for interacting with the User Service
+
 @Component
 public class UserServiceClient {
 
@@ -130,6 +128,7 @@ public class UserServiceClient {
     }
 
 
+    // Helper method to create headers with service API key
     private HttpHeaders createServiceHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Service-API-Key", serviceApiKey);

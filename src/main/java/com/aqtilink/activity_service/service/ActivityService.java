@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+//class that handles business logic for activities
+
 @Service
 public class ActivityService {
 

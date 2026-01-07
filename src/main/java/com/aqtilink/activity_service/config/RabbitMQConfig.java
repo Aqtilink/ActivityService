@@ -10,7 +10,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-    
+
+// Configuration class to set up RabbitMQ components
+
 @Configuration
 public class RabbitMQConfig {
 

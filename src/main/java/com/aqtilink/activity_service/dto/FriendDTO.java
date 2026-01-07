@@ -12,7 +12,7 @@ public class FriendDTO {
         this.lastName = lastName;
         this.email = email;
     }
-
+    //getters and setters
     public String getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }

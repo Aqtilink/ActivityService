@@ -62,22 +62,23 @@ Request Body:
   "participants": ["user-id"]
 }
 
-Response: ActivityResponseDTO (201 Created)
+Response: ActivityResponseDTO
+Status Code: 201 Created
 ```
 
 #### Join Activity
 ```
 POST /api/v1/activities/{activityId}/join/{userId}
 
-Response: 200 OK
-Exceptions: ActivityAlreadyStartedException if activity has started
+Status Code: 200 OK
+Exceptions: ActivityAlreadyStartedException (409 Conflict) if activity has started
 ```
 
 #### Delete Activity
 ```
 DELETE /api/v1/activities/{activityId}
 
-Response: 204 No Content
+Status Code: 204 No Content
 ```
 
 ### Activity Retrieval
@@ -87,6 +88,7 @@ Response: 204 No Content
 GET /api/v1/activities/user/{userId}
 
 Response: List<ActivityResponseDTO>
+Status Code: 200 OK
 ```
 
 #### Get Friends' Feed
@@ -94,6 +96,7 @@ Response: List<ActivityResponseDTO>
 GET /api/v1/activities/friends-feed/{userId}
 
 Response: List<ActivityResponseDTO>
+Status Code: 200 OK
 ```
 
 #### Get Joined Activities
@@ -101,6 +104,7 @@ Response: List<ActivityResponseDTO>
 GET /api/v1/activities/joined/{userId}
 
 Response: List<ActivityResponseDTO>
+Status Code: 200 OK
 ```
 
 #### Get All Activities
@@ -108,6 +112,7 @@ Response: List<ActivityResponseDTO>
 GET /api/v1/activities/all
 
 Response: List<ActivityResponseDTO>
+Status Code: 200 OK
 ```
 
 ## Data Models
@@ -297,19 +302,44 @@ docker run -p 8081:8081 \
 - **Events**: Activity creation notifications
 - **Publisher**: `NotificationPublisherActivity`
 
+## Additional Endpoints
+
+### User Data Management
+
+#### Delete Activities by Owner
+```
+DELETE /api/v1/activities/user/{userId}
+
+Status Code: 204 No Content
+Description: Deletes all activities owned by the specified user
+```
+
+#### Remove User from All Activities
+```
+DELETE /api/v1/activities/participants/{userId}
+
+Status Code: 204 No Content
+Description: Removes the user from all activities they are participating in
+```
+
 ## Error Handling
 
 ### Custom Exceptions
 
-- **ActivityAlreadyStartedException**: Thrown when attempting to join an activity that has already started
+- **ActivityAlreadyStartedException**: Thrown when attempting to join an activity that has already started (409 Conflict)
 
-### Standard HTTP Status Codes
-- `201 Created` - Activity successfully created
+### HTTP Status Codes
+
+#### Success Codes
 - `200 OK` - Successful GET or JOIN operations
-- `204 No Content` - Successful DELETE operation
+- `201 Created` - Activity successfully created
+- `204 No Content` - Successful DELETE operations
+
+#### Error Codes
 - `400 Bad Request` - Invalid input
 - `401 Unauthorized` - Missing/invalid JWT token
 - `404 Not Found` - Activity or resource not found
+- `409 Conflict` - Activity already started (cannot join)
 - `500 Internal Server Error` - Server-side error
 
 ## Development Guidelines

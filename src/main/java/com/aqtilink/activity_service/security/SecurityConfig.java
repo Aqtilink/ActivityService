@@ -13,11 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
-/**
- * Security configuration for Activity Service.
- * Requires JWT authentication for user-facing endpoints.
- * Requires API key for inter-service communication endpoints.
- */
+// class for security configuration
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -37,17 +34,14 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/activities/all").permitAll()
-                // Service-to-service deletes are guarded by ServiceApiKeyFilter; allow through here
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/activities/user/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/activities/participants/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/activities/**").permitAll() // Public feed endpoints
                 .requestMatchers(HttpMethod.POST, "/api/v1/activities/**").authenticated()
                 .anyRequest().authenticated()
             )
-            // Add API key filter before authorization to check for API key
             .addFilterBefore(apiKeyFilter, AuthorizationFilter.class);
 
-        // Only configure OAuth2 resource server if JWK URI is provided
         if (jwkSetUri != null && !jwkSetUri.isEmpty()) {
             http.oauth2ResourceServer(oauth2 -> oauth2
                 .jwt(jwt -> jwt.decoder(jwtDecoder()))
