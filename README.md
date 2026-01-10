@@ -11,6 +11,13 @@ The Activity Service is a core component of the Aqtilink ecosystem, handling all
 - Activity discovery and filtering
 - Event notifications
 
+## API Docs
+
+- Production Swagger UI: https://aqtilink.live/activity-docs/swagger-ui.html
+- Production OpenAPI JSON: https://aqtilink.live/activity-docs/v3/api-docs
+- Local Swagger UI: http://localhost:8081/activity-docs/swagger-ui.html
+- Local OpenAPI JSON: http://localhost:8081/activity-docs/v3/api-docs
+
 ## Architecture
 
 ### Technology Stack
@@ -41,113 +48,6 @@ activity_service/
 └── src/main/resources/
     ├── application.yml                    # Application configuration
     └── db/                                # Database scripts
-```
-
-## API Endpoints
-
-### Activity Management
-
-#### Create Activity
-```
-POST /api/v1/activities/json
-Content-Type: application/json
-
-Request Body:
-{
-  "ownerId": "user-id",
-  "title": "Morning Run",
-  "sportType": "RUNNING",
-  "startTime": "2025-01-10T08:00:00",
-  "location": "Central Park",
-  "participants": ["user-id"]
-}
-
-Response: ActivityResponseDTO
-Status Code: 201 Created
-```
-
-#### Join Activity
-```
-POST /api/v1/activities/{activityId}/join/{userId}
-
-Status Code: 200 OK
-Exceptions: ActivityAlreadyStartedException (409 Conflict) if activity has started
-```
-
-#### Delete Activity
-```
-DELETE /api/v1/activities/{activityId}
-
-Status Code: 204 No Content
-```
-
-### Activity Retrieval
-
-#### Get User's Activities
-```
-GET /api/v1/activities/user/{userId}
-
-Response: List<ActivityResponseDTO>
-Status Code: 200 OK
-```
-
-#### Get Friends' Feed
-```
-GET /api/v1/activities/friends-feed/{userId}
-
-Response: List<ActivityResponseDTO>
-Status Code: 200 OK
-```
-
-#### Get Joined Activities
-```
-GET /api/v1/activities/joined/{userId}
-
-Response: List<ActivityResponseDTO>
-Status Code: 200 OK
-```
-
-#### Get All Activities
-```
-GET /api/v1/activities/all
-
-Response: List<ActivityResponseDTO>
-Status Code: 200 OK
-```
-
-## Data Models
-
-### Activity Entity
-
-```java
-{
-  "id": "UUID",
-  "ownerId": "string",
-  "title": "string",
-  "sportType": "RUNNING|CYCLING|SWIMMING|HIKING|CLIMBING|YOGA|...",
-  "startTime": "LocalDateTime",
-  "location": "string",
-  "gpxPath": "string (optional)",
-  "createdAt": "LocalDateTime",
-  "participants": ["user-id-1", "user-id-2"],
-  "ownerName": "string (transient)"
-}
-```
-
-### ActivityResponseDTO
-
-Extends Activity data with:
-- `owner`: UserSummaryDTO - Owner profile information
-- `participants`: List<UserSummaryDTO> - Participant profiles
-
-### UserSummaryDTO
-
-```java
-{
-  "id": "string",
-  "name": "string",
-  "email": "string"
-}
 ```
 
 ## Key Features
