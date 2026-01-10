@@ -29,6 +29,12 @@ management:
       exposure:
         include: health,info
 
+springdoc:
+  swagger-ui:
+    path: /activity-docs/swagger-ui.html
+  api-docs:
+    path: /activity-docs/v3/api-docs
+
 cors:
   allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,https://aqtilink.live}
 

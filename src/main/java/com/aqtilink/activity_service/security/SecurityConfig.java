@@ -33,6 +33,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/activity-docs/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/activities/all").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/activities/user/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/activities/participants/**").permitAll()
